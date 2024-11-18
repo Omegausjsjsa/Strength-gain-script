@@ -13,9 +13,12 @@ local Window = Fluent:CreateWindow({
 })
 
 local Tabs = {
-    Main = Window:AddTab({ Title = "main", Icon = "" }),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+    Main = Window:AddTab({ Title = "Main" }),
+    Settings = Window:AddTab({ Title = "Settings" })
 }
+
+-- Debug tab creation
+print("Tabs.Main:", Tabs.Main)
 
 -- Global variable for strength toggle
 getgenv().strength = false
@@ -32,13 +35,17 @@ local function gainstrength()
 end
 
 -- Toggle for auto gain strength
-Tabs.Main:AddToggle({
-    Name = 'auto gain strength',
-    Default = false,
-    Callback = function(bool)
-        getgenv().strength = bool
-        if bool then
-            gainstrength()
+if Tabs.Main then
+    Tabs.Main:AddToggle({
+        Name = 'Auto Gain Strength',
+        Default = false,
+        Callback = function(bool)
+            getgenv().strength = bool
+            if bool then
+                gainstrength()
+            end
         end
-    end
-})
+    })
+else
+    warn("Tabs.Main is nil. Check your AddTab call.")
+end
