@@ -1,24 +1,12 @@
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
-local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
-local Window = Fluent:CreateWindow({
-    Title = "Etherbyte Hub",
-    SubTitle = "made by megladon/omega24119 with love",
-    TabWidth = 100,
-    Size = UDim2.fromOffset(420, 300),
-    Acrylic = true,
-    Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl
+local Window = OrionLib:MakeWindow({Name = "Etherbyte Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+
+local mainTab = Window:MakeTab({
+	Name = "main",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
 })
-
-local Tabs = {
-    Main = Window:AddTab({ Title = "Main" }),
-    Settings = Window:AddTab({ Title = "Settings" })
-}
-
--- Debug tab creation
-print("Tabs.Main:", Tabs.Main)
 
 -- Global variable for strength toggle
 getgenv().strength = false
@@ -30,22 +18,18 @@ local function gainstrength()
             [1] = "SeCuRiTyKeYTest38"
         }
         game:GetService("ReplicatedStorage").Remotes.Train:FireServer(unpack(args))
-        task.wait()
+        task.wait(0.1) -- Add a small delay to avoid overloading
     end
 end
 
 -- Toggle for auto gain strength
-if Tabs.Main then
-    Tabs.Main:AddToggle({
-        Name = 'Auto Gain Strength',
-        Default = false,
-        Callback = function(bool)
-            getgenv().strength = bool
-            if bool then
-                gainstrength()
-            end
-        end
-    })
-else
-    warn("Tabs.Main is nil. Check your AddTab call.")
-end
+mainTab:AddToggle({
+	Name = "auto gain strength",
+	Default = false,
+	Callback = function(Value)
+		getgenv().strength = Value
+		if Value then
+			task.spawn(gainstrength) -- Spawn the function to avoid blocking the thread
+		end
+	end
+})
