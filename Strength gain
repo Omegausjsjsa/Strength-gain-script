@@ -1,0 +1,44 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Etherbyte Hub",
+    SubTitle = "made by megladon/omega24119 with love",
+    TabWidth = 100,
+    Size = UDim2.fromOffset(420, 300),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tabs = {
+    Main = Window:AddTab({ Title = "main", Icon = "" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+-- Global variable for strength toggle
+getgenv().strength = false
+
+-- Function to gain strength
+local function gainstrength()
+    while getgenv().strength do
+        local args = {
+            [1] = "SeCuRiTyKeYTest38"
+        }
+        game:GetService("ReplicatedStorage").Remotes.Train:FireServer(unpack(args))
+        task.wait()
+    end
+end
+
+-- Toggle for auto gain strength
+Tabs.Main:AddToggle({
+    Name = 'auto gain strength',
+    Default = false,
+    Callback = function(bool)
+        getgenv().strength = bool
+        if bool then
+            gainstrength()
+        end
+    end
+})
